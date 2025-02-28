@@ -1,0 +1,2 @@
+OPENAI = "openai"
+GOOGLE = "google"
