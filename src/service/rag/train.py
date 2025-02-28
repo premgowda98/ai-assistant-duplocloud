@@ -1,5 +1,6 @@
 from typing import Literal
 import constants.embeddings as embd_const
+import constants.store as store_const
 from langchain_community.document_loaders.github import GithubFileLoader
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import CharacterTextSplitter
@@ -11,22 +12,12 @@ from pathlib import Path
 
 from utils.errors import VectorStoreNotLoaded
 
-# curr_dir = os.path.dirname(os.path.abspath(__file__))
-# persistent_dir = os.path.join(curr_dir, "db", "github")
-
-# loader = GithubFileLoader(access_token=os.getenv("GITHUB_TOKEN"),     
-#                         github_api_url="https://api.github.com",
-#                             file_filter=lambda file_path: 'getting-started-1/application-focussed-interface' in file_path,
-#                             branch="main",repo="duplocloud/docs",
-    
-#     )
-
 class VectorStore:
-    def __init__(self, embedding_type: str = Literal[embd_const.EMBEDDING_MODELS]):
+    def __init__(self, embedding_type: str):
         self.embedding_model = self._select_embedding_model(embedding_type)
         self.retriever = None
 
-    def _select_embedding_model(embedding_type: str):
+    def _select_embedding_model(self, embedding_type: str):
         if embedding_type in embd_const.GOOGLE_EMBEDDING_MODELS:
             return GoogleGenerativeAIEmbeddings(model=embedding_type)
         elif embedding_type in embd_const.OPENAI_EMBEDDING_MODELS:
@@ -35,10 +26,7 @@ class VectorStore:
         return GoogleGenerativeAIEmbeddings(model=embd_const.GOOGLE_EMBEDDING_004)
 
 
-    def train(self, persist_directory: Path, loader = Literal[GithubFileLoader, WebBaseLoader]) -> bool:
-        if persist_directory.exists():
-            return True
-        
+    def train(self, loader = Literal[GithubFileLoader, WebBaseLoader]) -> bool:
         try:
             documents = loader.load()
 
@@ -47,18 +35,20 @@ class VectorStore:
             docs = text_spliter.split_documents(documents)
 
             # create vector store
-            Chroma.from_documents(docs, self.embedding_model, persist_directory=persist_directory)
+            Chroma.from_documents(docs, self.embedding_model, persist_directory=store_const.PERSISTENT_DIR)
+
+            self.load_store()
 
             return True
         except Exception as e:
             print(e)
             return False
 
-    def load_store(self, persistent_dir: Path):
-        if not persistent_dir.exists():
-            raise FileNotFoundError("directory not found")
+    def load_store(self):
+        if not Path(store_const.PERSISTENT_DIR).exists():
+            raise FileNotFoundError("db not found, the model has not been trained")
         
-        db = Chroma(persist_directory=persistent_dir, embedding_function=self.embedding_model)
+        db = Chroma(persist_directory=store_const.PERSISTENT_DIR, embedding_function=self.embedding_model)
 
         self.retriever = db.as_retriever(
             search_type="similarity_score_threshold",
@@ -69,7 +59,7 @@ class VectorStore:
     
     def query(self, q: str):
         if not self.retriever:
-            VectorStoreNotLoaded("vector store not loaded")
+            raise VectorStoreNotLoaded("vector store not loaded")
 
         relevant_docs = self.retriever.invoke(q)
 
