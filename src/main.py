@@ -1,14 +1,18 @@
 import multiprocessing
 import sys
+
 import uvicorn
+from dotenv import load_dotenv
 from streamlit import runtime
 from streamlit.web import cli as stcli
+
 from api.app import app
-from dotenv import load_dotenv
+
 
 def run_streamlit():
     sys.argv = ["streamlit", "run", "ui/app.py"]
     sys.exit(stcli.main())
+
 
 def run_fastapi():
     uvicorn.run(app, host="0.0.0.0", port=8005)

@@ -1,6 +1,7 @@
 from langchain import chains
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+
 
 class RAGChain:
     def __init__(self, llm, vector_store):
@@ -21,7 +22,7 @@ class RAGChain:
             [
                 ("system", contextualized_system_prompt),
                 MessagesPlaceholder("chat_history"),
-                ("human", "{input}")
+                ("human", "{input}"),
             ]
         )
 
@@ -39,18 +40,16 @@ class RAGChain:
             "{context}"
         )
 
-        self.qa_prompt = ChatPromptTemplate.from_messages([
-            ("system", qa_system_prompt),
-            MessagesPlaceholder("chat_history"),
-            ("human", "{input}")
-        ])
+        self.qa_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", qa_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ]
+        )
 
     def get_chain(self):
-
         question_answer_chain = create_stuff_documents_chain(self.llm, self.qa_prompt)
-        rag_chain = chains.create_retrieval_chain(self.history_aware_retriever, question_answer_chain)
-
-        return rag_chain
-
-
-
+        return chains.create_retrieval_chain(
+            self.history_aware_retriever, question_answer_chain
+        )
