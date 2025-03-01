@@ -2,7 +2,6 @@ from typing import Literal
 import constants.embeddings as embd_const
 import constants.store as store_const
 from langchain_community.document_loaders.github import GithubFileLoader
-from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -26,7 +25,7 @@ class VectorStore:
         return GoogleGenerativeAIEmbeddings(model=embd_const.GOOGLE_EMBEDDING_004)
 
 
-    def train(self, loader = Literal[GithubFileLoader, WebBaseLoader]) -> bool:
+    def train(self, loader = Literal[GithubFileLoader]) -> bool:
         try:
             documents = loader.load()
 

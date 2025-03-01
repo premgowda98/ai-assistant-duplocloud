@@ -2,8 +2,7 @@ from langchain import chains
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chains.combine_documents import create_stuff_documents_chain
 
-
-class RAGTool:
+class RAGChain:
     def __init__(self, llm, vector_store):
         self.llm = llm
         self.vector_store = vector_store
@@ -27,7 +26,7 @@ class RAGTool:
         )
 
     def _enable_history(self):
-        self.history_aware_retriver = chains.create_history_aware_retriever(
+        self.history_aware_retriever = chains.create_history_aware_retriever(
             self.llm, self.vector_store, self.context_prompt
         )
 
@@ -49,7 +48,7 @@ class RAGTool:
     def get_chain(self):
 
         question_answer_chain = create_stuff_documents_chain(self.llm, self.qa_prompt)
-        rag_chain = chains.create_retrieval_chain(self.history_aware_retriver, question_answer_chain)
+        rag_chain = chains.create_retrieval_chain(self.history_aware_retriever, question_answer_chain)
 
         return rag_chain
 

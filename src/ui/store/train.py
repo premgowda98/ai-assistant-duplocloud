@@ -10,7 +10,7 @@ def train_model(url: str, model: str, embedding:str):
 
     return True
 
-def query_model(query: str, embedding: str):
+def query_vector_store(query: str, embedding: str):
     vs = VectorStore(embedding)
     vs.load_store()
     return vs.query(query)

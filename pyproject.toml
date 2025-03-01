@@ -17,4 +17,7 @@ dependencies = [
     "chroma>=0.2.0",
     "chromadb>=0.6.3",
     "langchain-openai>=0.3.7",
+    "tavily-python>=0.5.1",
+    "youtube-transcript-api>=0.6.3",
+    "youtube-search>=2.1.2",
 ]

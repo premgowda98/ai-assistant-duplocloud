@@ -2,7 +2,8 @@ from utils.validations import validate_url
 import constants.embeddings as embd_const
 import constants.llms as llm_const
 import constants.models as models_const
-from ui.train import train_model, query_model
+from ui.store.train import train_model
+from ui.store.chat import chat_with_llm
 import streamlit as st
 
 
@@ -33,12 +34,27 @@ with st.expander("📝 Note"):
         This Chatbot is trained on the duplocloud github documentations and will be capable of answering the related question,
              along with the ability to answer general questions
     ''')
+
 chat_container = st.container(height=500, border=True)
+
+## Initialize storage for messages
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    chat_container.chat_message(message["role"]).write(message["content"])
 
 if prompt := st.chat_input("Ask Anything"):
     try:
         chat_container.chat_message("user").write(prompt)
-        response = query_model(prompt, embedding_chosen)
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        response = chat_with_llm(model_chosen, embedding_chosen, prompt)
+
         chat_container.chat_message("assistant").write(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
     except FileNotFoundError as e:
         st.error("Please train the model, before querying")
+    except Exception as e:
+        chat_container.chat_message("assistant").write(f"something went wrong, {e}")
