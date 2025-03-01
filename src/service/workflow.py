@@ -2,7 +2,7 @@ from typing import List
 
 from langchain import hub
 from langchain.agents import AgentExecutor, create_react_agent
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferWindowMemory
 from langchain.tools import Tool
 from langchain_community.tools import YouTubeSearchTool
 from langchain_core.messages import SystemMessage
@@ -14,12 +14,13 @@ from service.tools.math import RandomNumberGeneratorTool
 from service.tools.rag import RAGChain
 from service.tools.search import WebSearchTool
 
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-initial_message = (
-    "You are AI Assistant that can provide helpful answers, using available tools"
-)
+memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True)
+initial_message = """
+    You are AI Assistant that can provide helpful answers, using available tools. 
+    For question related to Duplocloud using the Answer Question - Duplocloud tool to answer,
+    If not enough context, then use the web_search_tool for up to date information
+"""
 memory.chat_memory.add_message(SystemMessage(initial_message))
-
 
 class Chat:
     default_tools = [
@@ -62,7 +63,7 @@ class Chat:
 
     def setup_rag_tool(self, vector_store):
         rag = RAGChain(self.llm, vector_store)
-        rag_chain = rag.get_chain()
+        rag_chain = rag.retrieval_chain()
 
         rag_tool = Tool(
             name="Answer Question - Duplocloud",
