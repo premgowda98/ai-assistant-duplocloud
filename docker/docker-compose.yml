@@ -1,0 +1,8 @@
+services:
+  duplocloud-ai-chatbot:
+    image: localhost:5000/duplocloud-ai-assistant:latest
+    ports:
+      - "8501:8501"
+      - "8005:8005"
+    env_file:
+      - ../.env
