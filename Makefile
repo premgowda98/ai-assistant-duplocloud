@@ -21,6 +21,10 @@ codechecks: check_ruff
 uv_requirements:
 	uv pip compile pyproject.toml -o requirements.txt
 
+# Run as Process
+make run_app:
+	cd src && python3 main.py
+
 # Docker section
 
 IMAGE_REGISTRY=localhost:5000
