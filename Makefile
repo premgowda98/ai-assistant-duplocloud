@@ -31,7 +31,6 @@ IMAGE_REGISTRY=localhost:5000
 IMAGE_TAG=latest
 
 docker_build:
-	$(MAKE) uv_requirements
 	docker build -t $(IMAGE_REGISTRY)/duplocloud-ai-assistant:$(IMAGE_TAG) -f docker/Dockerfile .
 
 docker_run:
