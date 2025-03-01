@@ -7,7 +7,8 @@ from ui.store.chat import chat_with_llm
 from ui.store.train import train_model
 from utils.validations import validate_url
 
-st.title("DuploCLoud AI Assistant")
+st.set_page_config(page_title="AI Chatbot", page_icon="🤖")
+st.title("DuploCloud AI Assistant")
 
 with st.sidebar:
     llm_chosen = st.radio("Choose LLM", options=llm_const.LLMS, horizontal=True)
