@@ -1,4 +1,4 @@
 OPENAI = "openai"
 GOOGLE = "google"
 
-LLMS = [OPENAI, GOOGLE]
+LLMS = [GOOGLE, OPENAI]

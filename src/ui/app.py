@@ -27,11 +27,18 @@ with st.sidebar:
             with st.spinner(text="Training the model",show_time=True):
                 train_model(url, model_chosen, embedding_chosen)
 
+st.divider()
+with st.expander("📝 Note"):
+    st.write('''
+        This Chatbot is trained on the duplocloud github documentations and will be capable of answering the related question,
+             along with the ability to answer general questions
+    ''')
+chat_container = st.container(height=500, border=True)
 
-question = st.text_input("Your Question")
-if st.button("Send"):
+if prompt := st.chat_input("Ask Anything"):
     try:
-        response = query_model(question, embedding_chosen)
-        st.write(response)
+        chat_container.chat_message("user").write(prompt)
+        response = query_model(prompt, embedding_chosen)
+        chat_container.chat_message("assistant").write(response)
     except FileNotFoundError as e:
         st.error("Please train the model, before querying")
