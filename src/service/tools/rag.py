@@ -2,8 +2,9 @@ from langchain import chains
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-# https://dev.to/guilhermecxe/how-a-history-aware-retriever-works-5e07 
+# https://dev.to/guilhermecxe/how-a-history-aware-retriever-works-5e07
 # https://vijaykumarkartha.medium.com/beginners-guide-to-conversational-retrieval-chain-using-langchain-3ddf1357f371
+
 
 class RAGChain:
     def __init__(self, llm, vector_store):
@@ -56,10 +57,9 @@ class RAGChain:
         )
         self.document_chain = create_stuff_documents_chain(self.llm, qa_prompt)
 
-
     def retrieval_chain(self):
         """
-        Here the retrieval chain is created using retriever_chain and 
+        Here the retrieval chain is created using retriever_chain and
         document_chain to create conversational chain
         """
 

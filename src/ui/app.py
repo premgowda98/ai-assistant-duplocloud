@@ -33,6 +33,7 @@ with st.sidebar:
         else:
             with st.spinner(text="Training the model", show_time=True):
                 train_model(url, model_chosen, embedding_chosen)
+            st.toast("Training Completed", icon="✅")
 
 st.divider()
 with st.expander("📝 Note"):
@@ -60,7 +61,5 @@ if prompt := st.chat_input("Ask Anything"):
 
         chat_container.chat_message("assistant").write(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
-    except FileNotFoundError:
-        st.error("Please train the model, before querying")
     except Exception as e:
         chat_container.chat_message("assistant").write(f"something went wrong, {e}")

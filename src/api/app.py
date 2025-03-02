@@ -135,6 +135,11 @@ def chat(
             },
             status_code=status.HTTP_200_OK,
         )
+    except FileNotFoundError:
+        return JSONResponse(
+            content={"message": "please train the model", "data": {}, "error": "model not trained"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
     except Exception as e:
         return JSONResponse(
             content={"message": "something went wrong", "data": {}, "error": e},

@@ -22,6 +22,7 @@ initial_message = """
 """
 memory.chat_memory.add_message(SystemMessage(initial_message))
 
+
 class Chat:
     default_tools = [
         RandomNumberGeneratorTool(),
