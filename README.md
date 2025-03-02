@@ -1,11 +1,29 @@
 # AI Agentic Chatbot
 
-Chatbot has the following features:
+This project follows a modular architecture to keep different concerns separated, allowing for better maintainability. The various components of the system are organized into distinct modules that each handle a specific responsibility. These modules can interact with each other making the system extensible and flexible.
+
+## Features
 
 1. Ability to load documents from GitHub repositories and train the RAG model.
 2. Search YouTube videos by person or event, providing the latest videos.
 3. Search the internet for the latest events and help users with their questions.
 4. Supports OpenAI and Google AI models, as well as embedding models.
+
+## Project Structure
+
+The project has been organized into the following modular structure:
+
+- **`src/api`**: This module handles the core API functionality with FastAPI. It includes route definitions, request/response schemas, and related business logic.
+- **`src/constants`**: Contains constant values and configuration files used across different modules. This includes models, embeddings, and utility files.
+- **`src/db`**: Contains the Vector Embeddings of a RAG Model.
+- **`src/service`**: This module contains core business logic and services:
+    - **`rag`**: Handles the RAG (retrieval-augmented generation) logic, including training and loading models.
+    - **`tools`**: Contains specialized tools for functionalities like mathematical operations, RAG-based document retrieval, and external search operations.
+    - **`workflow.py`**: Coordinates the entire workflow, ensuring that each service is called in the correct sequence for seamless operation.
+- **`src/ui`**: Contains the Streamlit-based user interface (UI) and related modules for managing interactions on the front-end. Includes chat and training functionalities.
+- **`src/utils`**: Provides utility functions, error handling, and validation logic that can be reused across the application to reduce code duplication.
+
+This modular approach ensures that components are loosely coupled and focused on specific tasks. Each module can be independently developed, tested, and deployed.
 
 ## Tech Stack
 
@@ -19,8 +37,14 @@ Chatbot has the following features:
 
 ### Access the Hosted Version
 
+>Note: The app is hosted in my home server, hence it is uptime could be around 50-60%
+
 1. UI: [https://ui-chatbot.premgowda.in](https://ui-chatbot.premgowda.in)
 2. API: [https://api-chatbot.premgowda.in/docs](https://api-chatbot.premgowda.in/docs)
+
+### Steps to run application locally 
+
+>Note: The **.env** file must be present in the root directory. You can find the format in the **.env.tmpl** file.
 
 ### Run as Docker
 
@@ -28,24 +52,36 @@ Chatbot has the following features:
 2. If running on Linux, use the following commands:
     - `make docker_build` to build the image.
     - `make docker_run` to run the containers.
-3. If the `Make` command is not available:
-    1. Run `docker build -t localhost:5000/duplocloud-ai-assistant:latest docker/Dockerfile` to build the image.
-    2. To run the container, use the command: `docker compose -f docker/docker-compose.yml up -d`.
+3. If the **Make** command is not available:
+    1. Run following command to build the image. 
+    ```bash
+    docker build -t localhost:5000/duplocloud-ai-assistant:latest docker/Dockerfile
+    ```
+    2. To run the container, use the command 
+    ```bash 
+    docker compose -f docker/docker-compose.yml up -d
+    ```
 
 ### Run as a Process
 
-1. Create a virtual environment using the command: `python -m venv .venv` and activate it using: `source .venv/bin/activate`.
-2. Install dependencies: `pip install -r requirements.txt`.
-3. To run the application: `python src/main.py`.
+1. Create a virtual environment using the command and activate it using
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+2. Install dependencies: 
+```bash 
+pip install -r requirements.txt
+```
+3. To run the application
+```bash
+python src/main.py
+```
 
 ### Access the Application
 
 1. UI can be accessed at: [http://localhost:8501](http://localhost:8501).
 2. Backend API can be accessed at: [http://localhost:8005/docs](http://localhost:8005/docs).
-
-### Note
-
-- The `.env` file must be present in the root directory. You can find the format in the `.env.tmpl` file.
 
 ## How to Test the Application
 
